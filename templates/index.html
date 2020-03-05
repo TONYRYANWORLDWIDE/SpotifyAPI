@@ -1,0 +1,42 @@
+<html>
+  <head>
+
+<body>
+ <div>
+   <button type="button" id="Login">Login</button>
+ </div>
+
+
+
+
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+$("#Login").click(function () {
+
+
+   var client_id = 'bb7c475418484e7784d9cd25b5f9f52c';
+   var client_secret = 'b0da0baeeab1499884912aea11f4ca58';
+
+
+
+   $.ajax({
+      url: 'https://accounts.spotify.com/api/token',
+      type: 'GET',
+      headers: {
+      'Authorization': 'Basic ' + client_id + ':' + client_secret
+   },
+      success: function(data) {
+      console.log(data);
+      }
+   });
+
+
+
+});
+</script>
+
+</head>
+</html>
