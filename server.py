@@ -22,7 +22,7 @@ client_secret = 'b0da0baeeab1499884912aea11f4ca58'
 def credentials():
      client_id = 'bb7c475418484e7784d9cd25b5f9f52c'
      client_secret = 'b0da0baeeab1499884912aea11f4ca58'
-     auth_header = base64.b64encode(six.text_type(client_id + ":" + client_secret).encode("ascii"))
+
      return render_template('index.html')
 
 
