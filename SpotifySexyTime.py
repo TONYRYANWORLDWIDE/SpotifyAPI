@@ -27,6 +27,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope,username=username,))
 
 playlists =sp.user_playlists(username)['items']
 ijusthadsexid = '5PEleSkK4p4E1sx3x7cOLt'
+ijusthadsexid_length = sp.track(ijusthadsexid)['duration_ms'] / 1000
 
 studlength = input("How many minutes can you last: ")
 studlength = int(studlength)
@@ -39,7 +40,7 @@ for playlist in playlists:
 sexytimetracks = sp.playlist_tracks(sexytimeplaylistid)['items']
 sexytimetracks_ids = []
 
-current_duration_seconds = 0
+current_duration_seconds = ijusthadsexid_length
 for track in sexytimetracks:
     current_duration_seconds += (track['track']['duration_ms'])/1000
     sexytimetracks_ids.append(track['track']['id'])
@@ -65,4 +66,6 @@ while difference > 0:
                 difference = difference - duration
                 if difference < 0:
                     break  
+
+
 
