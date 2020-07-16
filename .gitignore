@@ -2,3 +2,7 @@
 env/Lib/site-packages/*
 
 
+env/Lib/site-packages/pip/__pycache__/*
+env/Lib/site-packages/pip/_internal/utils/*
+env/Lib/site-packages/pip/_internal/*
+
