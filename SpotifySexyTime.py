@@ -56,16 +56,21 @@ while difference > 0:
     print (difference)
     for tracks in toptracks:   
         name = tracks['name']
+    
         analysis = sp.audio_analysis(tracks['id'])
         tempo = analysis['track']['tempo']
         duration = tracks['duration_ms'] / 1000
+        print(name,duration)
         trackid = [tracks['id']]
         if (sexytimetracks_ids.count(tracks['id']) == 0):
             if tempo < 100:
                 sp.user_playlist_add_tracks(user = username, playlist_id =sexytimeplaylistid,tracks = trackid,position = 0 )
                 difference = difference - duration
                 if difference < 0:
-                    break  
+                    break
+    if difference > 0:
+        print('not enough songs found')
+    break
 
 
 
