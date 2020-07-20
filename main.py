@@ -12,6 +12,7 @@ import urllib
 import config
 import requests
 import time
+from createplaylist import createplaylist
 
 sexytimeplaylistid=''
 client_id = config.client_id
@@ -29,7 +30,7 @@ def verify():
     # Don't reuse a SpotifyOAuth object because they store token info and you could leak user tokens if you reuse a SpotifyOAuth object
     sp_oauth = spotipy.oauth2.SpotifyOAuth(client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri, scope = scope,cache_path=CACHE)
     auth_url = sp_oauth.get_authorize_url()
-    print("auth url:" ,auth_url)
+    # print("auth url:" ,auth_url)
     return redirect(auth_url)
 
 @app.route("/index")
@@ -38,24 +39,18 @@ def index():
 
 
 @app.route("/go" , methods=['POST'])
-def create_sexytime_playlist():    
+def create_sexytime_playlist():
     session['token_info'], authorized = get_token(session)
     session.modified = True
     if not authorized:
-        return redirect('/')
+        return redirect('/')   
     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
-    username =sp.current_user()['id']
-    print("username:", username)
-    playlists =sp.user_playlists(username)['items']
-    sexytimeplaylistid = ''
-    for playlist in playlists:
-        print(playlist['name'] )
-        if playlist['name'] == 'sexy time':
-            sexytimeplaylistid = playlist['uri']
-    print("tHIS IS IT",sexytimeplaylistid)
-    if sexytimeplaylistid == '':
-        print("creating it")
-        sexytimeplaylistid = sp.user_playlist_create(user=username, name ='sexy time',public = False,description = "Give it to her good")['id']
+    if request.method == 'POST':
+        studlength = request.form['studlength']
+
+        print("creatinglist")
+        sexytimeplaylistid = createplaylist(sp,studlength)
+                 
     return render_template("playlist.html",sexytimeplaylistid=sexytimeplaylistid)
 
 def get_token(session):
@@ -73,7 +68,6 @@ def get_token(session):
         # Don't reuse a SpotifyOAuth object because they store token info and you could leak user tokens if you reuse a SpotifyOAuth object
         sp_oauth = spotipy.oauth2.SpotifyOAuth(client_id = CLI_ID, client_secret = CLI_SEC, redirect_uri = REDIRECT_URI, scope = SCOPE,cache_path=CACHE)
         token_info = sp_oauth.refresh_access_token(session.get('token_info').get('refresh_token'))
-
     token_valid = True
     return token_info, token_valid
 
