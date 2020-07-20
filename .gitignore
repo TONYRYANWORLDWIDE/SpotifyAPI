@@ -2,3 +2,7 @@
 env/Lib/site-packages/*
 
 .cache-tonyryanworldwide
+__pycache__/app.cpython-38.pyc
+__pycache__/config.cpython-38.pyc
+__pycache__/*
+env/Scripts/*
