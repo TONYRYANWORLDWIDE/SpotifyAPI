@@ -50,8 +50,7 @@ def create_sexytime_playlist():
     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
     if request.method == 'POST':
         studlength = request.form['studlength']
-
-        print("creatinglist")
+        # print("creatinglist")
         sexytimeplaylistid = createplaylist(sp,studlength)
         tracks = sp.playlist_tracks(sexytimeplaylistid)['items']
                  
@@ -81,7 +80,7 @@ def callback():
     sp_oauth = spotipy.oauth2.SpotifyOAuth(client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri, scope = scope,cache_path=CACHE)
     session.clear()
     code = request.args.get('code')
-    token_info = sp_oauth.get_access_token(code)#,check_cache=False -try this next if still broken
+    token_info = sp_oauth.get_access_token(code,check_cache=False)#, -try this next if still broken
     # Saving the access token along with all other token related info
     session["token_info"] = token_info
     return redirect("index")
