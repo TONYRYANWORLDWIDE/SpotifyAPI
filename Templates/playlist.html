@@ -8,25 +8,17 @@
            <p>
             <a  href = '{{url_for('index')}}'>Home</a>
            </p>
-           <table id="tracks">
-            <tr >
-                <th>tracks</th>
-            </tr>
-            <tr>
-                link
-            </tr>
+           
+
            {% for i in tracks %}
-            <tr>
-                <td>
-                    <span>{{i.track.name}}</span>
-                </td>
-                <td>
+
+                    <p>{{i.track.name}}</p>                    
                     <!-- <span>{{i.track.href}}</span> -->
                     <!-- <a href = {{i.track.href}}>{{i.track.name}}</a> -->
-                    <img src = {{i.track.album.images[1].url}}>
-                </td>
-
-            </tr>
+                    <p>
+                        <img src = {{i.track.album.images[1].url}}>
+                    </p>
+                    <br><br>
             {% endfor %}
             </div>
        </div>

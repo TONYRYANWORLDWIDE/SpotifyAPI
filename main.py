@@ -1,5 +1,4 @@
 from flask import Flask,session, render_template, request, redirect, url_for, flash, jsonify
-app = Flask(__name__)
 import os
 import spotipy
 import spotipy.util as util
@@ -13,6 +12,8 @@ import config
 import requests
 import time
 from createplaylist import createplaylist
+app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 sexytimeplaylistid=''
 client_id = config.client_id
@@ -84,6 +85,6 @@ def callback():
     return redirect("index")
 
 if __name__ == '__main__':  # ensure function only runs if executed from the python interpreter
-    app.secret_key = 'super_secret_key2'
+    # app.secret_key = 'super_secret_key2'
     app.debug = True        # server will reload itself whenever a change is made
     app.run(host = '0.0.0.0' , port = 5000)

@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\tonyr\Desktop\SpotifyAPI\env"
+VIRTUAL_ENV="C:\Users\aryan\Desktop\SpotifyAPI\env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
