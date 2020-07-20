@@ -19,11 +19,13 @@ sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
 redirect_uri = 'https://spotifysexytime.azurewebsites.net/callback'
+# redirect_uri = 'http://127.0.0.1:5000/callback'
 API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
 SHOW_DIALOG = True
-CACHE = ".cache-" + "tonyryanworldwide"
+# CACHE = ".cache-" + "tonyryanworldwide"
+CACHE = cache_path
 
 
 @app.route('/')
@@ -79,7 +81,7 @@ def callback():
     sp_oauth = spotipy.oauth2.SpotifyOAuth(client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri, scope = scope,cache_path=CACHE)
     session.clear()
     code = request.args.get('code')
-    token_info = sp_oauth.get_access_token(code)
+    token_info = sp_oauth.get_access_token(code)#,check_cache=False -try this next if still broken
     # Saving the access token along with all other token related info
     session["token_info"] = token_info
     return redirect("index")
