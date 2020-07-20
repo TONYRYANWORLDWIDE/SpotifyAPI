@@ -50,8 +50,9 @@ def create_sexytime_playlist():
 
         print("creatinglist")
         sexytimeplaylistid = createplaylist(sp,studlength)
+        tracks = sp.playlist_tracks(sexytimeplaylistid)['items']
                  
-    return render_template("playlist.html",sexytimeplaylistid=sexytimeplaylistid)
+    return render_template("playlist.html",sexytimeplaylistid=sexytimeplaylistid,tracks=tracks)
 
 def get_token(session):
     token_valid = False
