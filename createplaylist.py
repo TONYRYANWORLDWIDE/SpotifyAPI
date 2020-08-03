@@ -30,18 +30,28 @@ def get_tracklengths(sp,studlength,sexytimeplaylistid,user):
     for track2 in toptracks:
         if track2['id'] != '5PEleSkK4p4E1sx3x7cOLt':
             tracklength[track2['id']] = track2['duration_ms'] / 1000
-    for tracks in tracklength.copy():
-        analysis = sp.audio_analysis(tracks)
-        tempo = analysis['track']['tempo']
-        tr = sp.track(tracks)
-        name = tr['name']   
-        artist = tr['artists'][0]['id']
+    tracks=sp.tracks(tracklength.keys())
+    
+    tracks=sp.tracks(tracklength.keys())
+    for trk in tracks['tracks']:
+        id = trk['id']
+        name = trk['name']
+        artist = trk['artists'][0]['id']
         try:
             genre = sp.artist(artist)['genres'][0]
         except:
             genre = ''
-        if (genre in exclude_genres) or tempo > 100:
-            del tracklength[tracks]
+        if (genre in exclude_genres): 
+            del tracklength[id]
+
+    features = sp.audio_features(tracklength.keys())
+    for feature in features:
+        id = feature['id']
+        tempo = feature['tempo']
+        if tempo > 100:
+            del tracklength[id]   
+
+
     tracklengths = list(tracklength.values())
     sumtracklengh = sum(tracklengths) 
     totaltracks  = len(tracklengths)
