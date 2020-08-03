@@ -2,13 +2,10 @@ import itertools
 from itertools import combinations
 
 def createplaylist(sp,studlength):
-    # print("createplaylist")
     user =sp.current_user()['id']
-    # print("user", user)
     playlists =sp.user_playlists(user)['items']
     sexytimeplaylistid = ''
     #Create sexytime playlist if it doesn't already exist
-    # print(playlists)
     for playlist in playlists:
         if playlist['name'] == 'sexy time':
             sexytimeplaylistid = playlist['uri']
@@ -36,15 +33,14 @@ def get_tracklengths(sp,studlength,sexytimeplaylistid,user):
     for tracks in tracklength.copy():
         analysis = sp.audio_analysis(tracks)
         tempo = analysis['track']['tempo']
-        name = sp.track(tracks)['name']
-        artist = sp.track(tracks)['artists'][0]['id']
+        tr = sp.track(tracks)
+        name = tr['name']   
+        artist = tr['artists'][0]['id']
         try:
             genre = sp.artist(artist)['genres'][0]
         except:
             genre = ''
         if (genre in exclude_genres) or tempo > 100:
-            # print(tracks)
-            # print(name,artist,genre)
             del tracklength[tracks]
     tracklengths = list(tracklength.values())
     sumtracklengh = sum(tracklengths) 
@@ -53,12 +49,9 @@ def get_tracklengths(sp,studlength,sexytimeplaylistid,user):
         average_track_length = sumtracklengh / totaltracks
     else:
          average_track_length = 240
-    # print(sumtracklengh, totaltracks, average_track_length,studlength_seconds)
-    # average_track_length = sum(tracklengths) / len(tracklengths)
     numberofsongsneeded = round(studlength_seconds / average_track_length)
     result_shown = find_closest_sum(tracklength,studlength_seconds,numberofsongsneeded)
     trackstoadd = list(result_shown.keys())
-    # print("tracks to add")
     deleteAndRepopulate(sp,trackstoadd,user,sexytimeplaylistid)
     
 def find_closest_sum(numbers, target, n):
