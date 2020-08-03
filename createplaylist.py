@@ -17,7 +17,7 @@ def createplaylist(sp,studlength):
     return sexytimeplaylistid
     
 def get_tracklengths(sp,studlength,sexytimeplaylistid,user):
-    print("getracklengths")
+#     print("getracklengths")
     studlength_seconds = int(studlength) * 60
     sexytimetracks = sp.playlist_tracks(sexytimeplaylistid)['items']
     tracklength = {}
@@ -59,10 +59,16 @@ def get_tracklengths(sp,studlength,sexytimeplaylistid,user):
         average_track_length = sumtracklengh / totaltracks
     else:
          average_track_length = 240
+
     numberofsongsneeded = round(studlength_seconds / average_track_length)
-    result_shown = find_closest_sum(tracklength,studlength_seconds,numberofsongsneeded)
-    trackstoadd = list(result_shown.keys())
-    deleteAndRepopulate(sp,trackstoadd,user,sexytimeplaylistid)
+    print(sum(tracklength.values()))
+    if numberofsongsneeded > len(tracklength):
+        trackstoadd = list(tracklength.keys())
+        deleteAndRepopulate(sp,trackstoadd,user,sexytimeplaylistid)
+    else:
+        result_shown = find_closest_sum(tracklength,studlength_seconds,numberofsongsneeded)
+        trackstoadd = list(result_shown.keys())
+        deleteAndRepopulate(sp,trackstoadd,user,sexytimeplaylistid)
     
 def find_closest_sum(numbers, target, n):
     permlist = list(map(dict, itertools.combinations(numbers.items(), n)))
