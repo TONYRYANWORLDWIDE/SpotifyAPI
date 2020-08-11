@@ -69,16 +69,17 @@ def genrePlaylist():
     if request.method == 'POST':
         playlistlength = request.form['playlistlength']
         playlistseconds = int(playlistlength) * 60
-        genrelist = request.form['genres']
-        # for g in genrelist:
-        #     id = sp.user_playlist_create(user=user,name =g)['id']
-        #     tracks = gen.genrefilter(finaltrackinfo,g)
-        #     print(user,id,tracks)
-        #     sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks,position = 0)
-        id = sp.user_playlist_create(user=user,name =genrelist)['id']
-        tracks = gen.genrefilter(finaltrackinfo,genrelist,playlistseconds)
-        print(user,id,tracks)
-        sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks,position = 0)
+        # genrelist = request.form['genres']
+        genrelist = request.form.getlist('genres')
+        for g in genrelist:
+            id = sp.user_playlist_create(user=user,name =g)['id']
+            tracks = gen.genrefilter(finaltrackinfo,g,playlistseconds)
+            print(user,id,tracks)
+            sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks,position = 0)
+        # id = sp.user_playlist_create(user=user,name =genrelist)['id']
+        # tracks = gen.genrefilter(finaltrackinfo,genrelist,playlistseconds)
+        # print(user,id,tracks)
+        # sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks,position = 0)
         tracks = sp.playlist_tracks(id)['items']
     return render_template('playlist.html',tracks = tracks)
 
