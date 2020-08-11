@@ -12,14 +12,15 @@ import config
 import requests
 import time
 from createplaylist import createplaylist
+from genres import genreList
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
-redirect_uri = 'https://spotifysexytime.azurewebsites.net/callback'
-# redirect_uri = 'http://127.0.0.1:5000/callback'
+# redirect_uri = 'https://spotifysexytime.azurewebsites.net/callback'
+redirect_uri = 'http://127.0.0.1:5000/callback' 
 API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
@@ -40,6 +41,17 @@ def verify():
 def index():
     return render_template("index.html",sexytimeplaylistid=sexytimeplaylistid)
 
+@app.route('/genres',methods=['GET'])
+def genres():
+    session['token_info'], authorized = get_token(session)
+    session.modified = True
+    if not authorized:
+        return redirect('/')   
+    sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
+    gen = genreList()
+    gen.sp = sp
+    genres , _ = gen.getgenres()
+    return render_template('genres.html', genres=genres)
 
 @app.route("/go" , methods=['POST'])
 def create_sexytime_playlist():
