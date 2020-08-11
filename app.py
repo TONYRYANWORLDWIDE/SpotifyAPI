@@ -12,7 +12,7 @@ import config
 import requests
 import time
 from createplaylist import createplaylist
-from genres import genreList
+from getgenres import genreList
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
@@ -41,7 +41,7 @@ def verify():
 def index():
     return render_template("index.html",sexytimeplaylistid=sexytimeplaylistid)
 
-@app.route('/genres',methods=['GET'])
+@app.route("/genres")
 def genres():
     session['token_info'], authorized = get_token(session)
     session.modified = True
@@ -50,8 +50,38 @@ def genres():
     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
     gen = genreList()
     gen.sp = sp
-    genres , _ = gen.getgenres()
+    user =sp.current_user()['id']
+    genres , finaltrackinfo = gen.getgenres()     
     return render_template('genres.html', genres=genres)
+
+
+@app.route('/genrePlaylist',methods=['POST'])
+def genrePlaylist():
+    # session['token_info'], authorized = get_token(session)
+    # session.modified = True
+    # if not authorized:
+    #     return redirect('/')   
+    sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
+    gen = genreList()
+    gen.sp = sp
+    user =sp.current_user()['id']
+    genres , finaltrackinfo = gen.getgenres()
+    if request.method == 'POST':
+        playlistlength = request.form['playlistlength']
+        playlistseconds = int(playlistlength) * 60
+        genrelist = request.form['genres']
+        # for g in genrelist:
+        #     id = sp.user_playlist_create(user=user,name =g)['id']
+        #     tracks = gen.genrefilter(finaltrackinfo,g)
+        #     print(user,id,tracks)
+        #     sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks,position = 0)
+        id = sp.user_playlist_create(user=user,name =genrelist)['id']
+        tracks = gen.genrefilter(finaltrackinfo,genrelist,playlistseconds)
+        print(user,id,tracks)
+        sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks,position = 0)
+        tracks = sp.playlist_tracks(id)['items']
+    return render_template('playlist.html',tracks = tracks)
+
 
 @app.route("/go" , methods=['POST'])
 def create_sexytime_playlist():
