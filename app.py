@@ -19,8 +19,8 @@ app.secret_key = os.urandom(24)
 sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
-redirect_uri = 'https://spotifysexytime.azurewebsites.net/callback'
-# redirect_uri = 'http://127.0.0.1:5000/callback' 
+# redirect_uri = 'https://spotifysexytime.azurewebsites.net/callback'
+redirect_uri = 'http://127.0.0.1:5000/callback' 
 API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
@@ -37,9 +37,9 @@ def verify():
     # print("auth url:" ,auth_url)
     return redirect(auth_url)
 
-@app.route("/index")
+@app.route("/sexytime")
 def index():
-    return render_template("index.html",sexytimeplaylistid=sexytimeplaylistid)
+    return render_template("sexytime.html",sexytimeplaylistid=sexytimeplaylistid)
 
 @app.route("/genres")
 def genres():
