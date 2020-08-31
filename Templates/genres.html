@@ -1,20 +1,16 @@
-<html>
-    <head>
-        <title>Spotify</title>        
-    </head>
-    <body>
-    <form action="/genrePlaylist" method="POST">
-            <label for="playlistlength">How Long do you want your playlists(Minutes):</label>
-            <input type = 'number' size = '3'  name = 'playlistlength' placeholder = ""
-            min="1" max="600">
-            <br><br>                  
-            <select name="genres" multiple size = 10>
-            <option value="{{genres[0]}}" selected>{{genres[0]}}</option>
-            {% for genre in genres[1:] %}
-                <option value="{{genre}}">{{genre}}</option>
-            {% endfor %}
-            </select>
-            <input type="submit" value="Create Genre Playlists" name="Button"/>           
-    </form>
-    </body>
-</html>
+{% extends "layout.html" %}
+{% block content %}
+<form action="/genrePlaylist" method="POST">
+        <label for="playlistlength">How Long do you want your playlists(Minutes):</label>
+        <input type = 'number' size = '3'  name = 'playlistlength' placeholder = ""
+        min="1" max="600">
+        <br><br>                  
+        <select name="genres" multiple size = 10>
+        <option value="{{genres[0]}}" selected>{{genres[0]}}</option>
+        {% for genre in genres[1:] %}
+            <option value="{{genre}}">{{genre}}</option>
+        {% endfor %}
+        </select>
+        <input type="submit" value="Create Genre Playlists" name="Button"/>           
+</form>
+{% endblock %}
