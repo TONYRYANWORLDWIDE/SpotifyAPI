@@ -27,9 +27,7 @@ API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
 SHOW_DIALOG = True
-# CACHE = ".cache-" + "tonyryanworldwide"
 CACHE = '.spotipyoauthcache'
-
 
 @app.route('/')
 def verify():
@@ -63,11 +61,7 @@ def genres():
 
 
 @app.route('/genrePlaylist',methods=['POST'])
-def genrePlaylist():
-    # session['token_info'], authorized = get_token(session)
-    # session.modified = True
-    # if not authorized:
-    #     return redirect('/')   
+def genrePlaylist():  
     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
     gen = genreList()
     gen.sp = sp
@@ -80,13 +74,10 @@ def genrePlaylist():
             playlistlength = 600
             print("playlistlength none:{0}".format(playlistlength))
         playlistseconds = int(playlistlength) * 60
-        # genrelist = request.form['genres']
         genrelist = request.form.getlist('genres')
         for g in genrelist:
             id = sp.user_playlist_create(user=user,name =g)['id']
-            tracks = gen.genrefilter(finaltrackinfo,g,playlistseconds)
-            # print(user,id,tracks)
-            # sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks,position = 0)
+            tracks = gen.genrefilter(finaltrackinfo,g,playlistseconds)            
             lengthtracks = len(tracks)
             x= 0
             if lengthtracks <= 100:
@@ -109,7 +100,6 @@ def genrePlaylist():
         tracks = sp.playlist_tracks(id)['items']
     return render_template('playlist.html',tracks = tracks)
 
-
 @app.route("/go" , methods=['POST'])
 def create_sexytime_playlist():
     session['token_info'], authorized = get_token(session)
@@ -120,8 +110,7 @@ def create_sexytime_playlist():
     if request.method == 'POST':
         studlength = request.form['studlength']
         sexytimeplaylistid = createplaylist(sp,studlength)
-        tracks = sp.playlist_tracks(sexytimeplaylistid)['items']
-                 
+        tracks = sp.playlist_tracks(sexytimeplaylistid)['items']                 
     return render_template("playlist.html",sexytimeplaylistid=sexytimeplaylistid,tracks=tracks)
 
 def get_token(session):
