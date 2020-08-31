@@ -19,8 +19,8 @@ app.secret_key = os.urandom(24)
 sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
-redirect_uri = 'https://spotifysexytime.azurewebsites.net/callback'
-# redirect_uri = 'http://127.0.0.1:5000/callback' 
+# redirect_uri = 'https://spotifysexytime.azurewebsites.net/callback'
+redirect_uri = 'http://127.0.0.1:5000/callback' 
 API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
@@ -68,18 +68,41 @@ def genrePlaylist():
     genres , finaltrackinfo = gen.getgenres()
     if request.method == 'POST':
         playlistlength = request.form['playlistlength']
+        print("playlistlength{0}".format(playlistlength))
+        if playlistlength == '':
+            playlistlength = 600
+            print("playlistlength none:{0}".format(playlistlength))
         playlistseconds = int(playlistlength) * 60
         # genrelist = request.form['genres']
         genrelist = request.form.getlist('genres')
         for g in genrelist:
             id = sp.user_playlist_create(user=user,name =g)['id']
             tracks = gen.genrefilter(finaltrackinfo,g,playlistseconds)
-            print(user,id,tracks)
-            sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks,position = 0)
-        # id = sp.user_playlist_create(user=user,name =genrelist)['id']
-        # tracks = gen.genrefilter(finaltrackinfo,genrelist,playlistseconds)
-        # print(user,id,tracks)
-        # sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks,position = 0)
+            # print(user,id,tracks)
+            # sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks,position = 0)
+            lengthtracks = len(tracks)
+            x= 0
+            if lengthtracks <= 100:
+                y = lengthtracks
+                print("x:{0} y:{1}".format(x,y))
+                sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks[x:y],position = 0)
+            else:
+                y = 100
+                print("1st else: x{} y{}".format(x,y))
+                sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks[x:y],position = 0)
+                iteration = 1
+                while y >0:
+                    x = x +100
+                    if lengthtracks < x  + 100:
+                        y = lengthtracks   
+                        print("inif: x{} y{}".format(x,y))
+                        sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks[x:y],position = 0)
+                        y = 0
+                    else:
+                        y = y + 100
+                        print("else x:{} y:{}".format(x,y))
+                        sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks[x:y],position = 0)
+                    iteration += 1
         tracks = sp.playlist_tracks(id)['items']
     return render_template('playlist.html',tracks = tracks)
 
@@ -93,7 +116,6 @@ def create_sexytime_playlist():
     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
     if request.method == 'POST':
         studlength = request.form['studlength']
-        # print("creatinglist")
         sexytimeplaylistid = createplaylist(sp,studlength)
         tracks = sp.playlist_tracks(sexytimeplaylistid)['items']
                  

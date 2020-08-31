@@ -86,6 +86,6 @@ class genreList():
         self.finaltrackinfo = finaltrackinfo[finaltrackinfo['genre'].isin(genres['genre'])]
         return self.genrelist, self.finaltrackinfo
         
-    def genrefilter(self,df,gen,sec_lim = 14400):
+    def genrefilter(self,df,gen,sec_lim = 36000):
         dfin = df['trackid'][(df['genre'] == gen) & (df['cum_sec'] <= sec_lim)]
-        return dfin.tolist()[0:100]
+        return dfin.tolist()#[0:100]
