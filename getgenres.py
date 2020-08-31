@@ -88,4 +88,4 @@ class genreList():
         
     def genrefilter(self,df,gen,sec_lim = 36000):
         dfin = df['trackid'][(df['genre'] == gen) & (df['cum_sec'] <= sec_lim)]
-        return dfin.tolist()#[0:100]
+        return dfin.tolist()

@@ -19,8 +19,8 @@ app.secret_key = os.urandom(24)
 sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
-# redirect_uri = 'https://spotifysexytime.azurewebsites.net/callback'
-redirect_uri = 'http://127.0.0.1:5000/callback' 
+redirect_uri = 'https://spotifysexytime.azurewebsites.net/callback'
+# redirect_uri = 'http://127.0.0.1:5000/callback' 
 API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
@@ -84,23 +84,19 @@ def genrePlaylist():
             x= 0
             if lengthtracks <= 100:
                 y = lengthtracks
-                print("x:{0} y:{1}".format(x,y))
                 sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks[x:y],position = 0)
             else:
                 y = 100
-                print("1st else: x{} y{}".format(x,y))
                 sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks[x:y],position = 0)
                 iteration = 1
                 while y >0:
                     x = x +100
                     if lengthtracks < x  + 100:
                         y = lengthtracks   
-                        print("inif: x{} y{}".format(x,y))
                         sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks[x:y],position = 0)
                         y = 0
                     else:
                         y = y + 100
-                        print("else x:{} y:{}".format(x,y))
                         sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks[x:y],position = 0)
                     iteration += 1
         tracks = sp.playlist_tracks(id)['items']
