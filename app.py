@@ -31,10 +31,11 @@ CACHE = '.spotipyoauthcache'
 
 @app.route('/')
 def verify():
+    print('verify')
     # Don't reuse a SpotifyOAuth object because they store token info and you could leak user tokens if you reuse a SpotifyOAuth object
     sp_oauth = spotipy.oauth2.SpotifyOAuth(client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri, scope = scope,cache_path=CACHE)
     auth_url = sp_oauth.get_authorize_url()
-    # print("auth url:" ,auth_url)
+    print("auth url:" ,auth_url)
     return redirect(auth_url)
 
 @app.route("/sexytime")
