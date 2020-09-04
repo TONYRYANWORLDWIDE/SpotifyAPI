@@ -1,6 +1,5 @@
 .ipynb_checkpoints/SpotifySexyTime-checkpoint.ipynb
 env/Lib/site-packages/*
-
 .cache-tonyryanworldwide
 __pycache__/app.cpython-38.pyc
 __pycache__/config.cpython-38.pyc
@@ -8,5 +7,11 @@ __pycache__/*
 env/Scripts/*
 .ipynb_checkpoints/SpotifySexyTime-Copy1-checkpoint.ipynb
 .ipynb_checkpoints/Untitled-checkpoint.ipynb
-Untitled.ipynb
-SpotifySexyTime-Copy1.ipynb
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+lib/
+
