@@ -81,7 +81,7 @@ class genreList():
         finaltrackinfo = self.getfinaltrackinfo()
         genres = finaltrackinfo.groupby('genre').count().reset_index()[['genre','artistid']]
         genres.columns=['genre','count']
-        genres = genres[(genres['count'] >= 25) & (genres['genre']!= '')].sort_values(by ='count', ascending = False)
+        genres = genres[(genres['count'] >= 25) & (genres['genre']!= '')].sort_values(by ='genre', ascending = True)
         self.genrelist = genres['genre'].tolist()
         self.finaltrackinfo = finaltrackinfo[finaltrackinfo['genre'].isin(genres['genre'])]
         return self.genrelist, self.finaltrackinfo
