@@ -21,8 +21,8 @@ app.secret_key = os.urandom(24)
 sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
-# redirect_uri = 'https://spotifyplaylisttr.azurewebsites.net/callback'
-redirect_uri = 'http://127.0.0.1:5000/callback' 
+redirect_uri = 'https://spotifyplaylisttr.azurewebsites.net/callback'
+# redirect_uri = 'http://127.0.0.1:5000/callback' 
 API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
@@ -141,7 +141,7 @@ def get_token(session):
     # Refreshing token if it has expired
     if (is_token_expired):
         # Don't reuse a SpotifyOAuth object because they store token info and you could leak user tokens if you reuse a SpotifyOAuth object
-        sp_oauth = spotipy.oauth2.SpotifyOAuth(client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri, scope = SCOPE,cache_path=CACHE)
+        sp_oauth = spotipy.oauth2.SpotifyOAuth(client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri, scope = scope,cache_path=CACHE)
         token_info = sp_oauth.refresh_access_token(session.get('token_info').get('refresh_token'))
     token_valid = True
     return token_info, token_valid
