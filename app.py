@@ -40,6 +40,7 @@ def verify():
 
 @app.route("/index")
 def index():
+    print("index")
     return render_template("index.html")
 
 @app.route("/sexytime")
@@ -55,8 +56,8 @@ def genres():
     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
     gen = genreList()
     gen.sp = sp
-    # user =sp.current_user()['id']
-    genres , _ = gen.getgenres()     
+    user =sp.current_user()['id']
+    genres , finaltrackinfo = gen.getgenres()     
     return render_template('genres.html', genres=genres)
 
 
@@ -66,7 +67,7 @@ def genrePlaylist():
     gen = genreList()
     gen.sp = sp
     user =sp.current_user()['id']
-    _ , finaltrackinfo = gen.getgenres()
+    genres , finaltrackinfo = gen.getgenres()
     if request.method == 'POST':
         playlistlength = request.form['playlistlength']
         print("playlistlength{0}".format(playlistlength))
@@ -75,6 +76,19 @@ def genrePlaylist():
             print("playlistlength none:{0}".format(playlistlength))
         playlistseconds = int(playlistlength) * 60
         genrelist = request.form.getlist('genres')
+        offset = 0
+        pll = 50
+        while(pll == 50):
+            playlists = sp.user_playlists(user=user,offset=offset)['items']
+            pll = len(playlists)            
+            for playlist in playlists:
+                name = playlist['name'] 
+                id = playlist['uri'][-22:]
+                if name in genrelist:
+                    print('deleting{0} id {1}'.format(name,id))
+                    sp.user_playlist_unfollow(user=user, playlist_id = id)
+            offset +=50
+
         for g in genrelist:
             id = sp.user_playlist_create(user=user,name =g)['id']
             tracks = gen.genrefilter(finaltrackinfo,g,playlistseconds)            
@@ -114,6 +128,7 @@ def create_sexytime_playlist():
     return render_template("playlist.html",sexytimeplaylistid=sexytimeplaylistid,tracks=tracks)
 
 def get_token(session):
+    print("get token")
     token_valid = False
     token_info = session.get("token_info", {})
     # Checking if the session already has a token stored
@@ -133,6 +148,7 @@ def get_token(session):
 
 @app.route("/callback")
 def callback():
+    print("callback")
     # Don't reuse a SpotifyOAuth object because they store token info and you could leak user tokens if you reuse a SpotifyOAuth object
     sp_oauth = spotipy.oauth2.SpotifyOAuth(client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri, scope = scope,cache_path=CACHE)
     session.clear()
@@ -146,3 +162,4 @@ if __name__ == '__main__':  # ensure function only runs if executed from the pyt
     # app.secret_key = 'super_secret_key2'
     app.debug = True        # server will reload itself whenever a change is made
     app.run(host = '0.0.0.0' , port = 5000)
+    print("apprun")
