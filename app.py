@@ -55,8 +55,8 @@ def genres():
     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
     gen = genreList()
     gen.sp = sp
-    user =sp.current_user()['id']
-    genres , finaltrackinfo = gen.getgenres()     
+    # user =sp.current_user()['id']
+    genres , _ = gen.getgenres()     
     return render_template('genres.html', genres=genres)
 
 
@@ -66,7 +66,7 @@ def genrePlaylist():
     gen = genreList()
     gen.sp = sp
     user =sp.current_user()['id']
-    genres , finaltrackinfo = gen.getgenres()
+    _ , finaltrackinfo = gen.getgenres()
     if request.method == 'POST':
         playlistlength = request.form['playlistlength']
         print("playlistlength{0}".format(playlistlength))
