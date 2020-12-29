@@ -21,8 +21,8 @@ app.secret_key = os.urandom(24)
 sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
-redirect_uri = 'https://spotifyplaylisttr.azurewebsites.net/callback'
-# redirect_uri = 'http://127.0.0.1:5000/callback' 
+# redirect_uri = 'https://spotifyplaylisttr.azurewebsites.net/callback'
+redirect_uri = 'http://127.0.0.1:5000/callback' 
 API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
@@ -162,4 +162,3 @@ if __name__ == '__main__':  # ensure function only runs if executed from the pyt
     # app.secret_key = 'super_secret_key2'
     app.debug = True        # server will reload itself whenever a change is made
     app.run(host = '0.0.0.0' , port = 5000)
-    print("apprun")
