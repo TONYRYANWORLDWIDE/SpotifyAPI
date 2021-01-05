@@ -21,7 +21,7 @@ app.secret_key = os.urandom(24)
 sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
-redirect_uri = 'https://spotifyplaylisttr.azurewebsites.net/callback'
+redirect_uri = 'https://spotifysexytime.azurewebsites.net/callback'
 # redirect_uri = 'http://127.0.0.1:5000/callback' 
 API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
@@ -37,6 +37,8 @@ def verify():
     auth_url = sp_oauth.get_authorize_url()
     print("auth url:" ,auth_url)
     return redirect(auth_url)
+    return render_template("index.html")
+    # return 'Hello'
 
 @app.route("/index")
 def index():
@@ -45,10 +47,12 @@ def index():
 
 @app.route("/sexytime")
 def sexytime():
+    print('sexytime ')
     return render_template("sexytime.html",sexytimeplaylistid=sexytimeplaylistid)
 
 @app.route("/genres")
 def genres():
+    print('genres')
     session['token_info'], authorized = get_token(session)
     session.modified = True
     if not authorized:
@@ -63,6 +67,7 @@ def genres():
 
 @app.route('/genrePlaylist',methods=['POST'])
 def genrePlaylist():  
+    print('genreplaylist')
     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
     gen = genreList()
     gen.sp = sp
@@ -116,6 +121,7 @@ def genrePlaylist():
 
 @app.route("/go" , methods=['POST'])
 def create_sexytime_playlist():
+    print('createsexytime')
     session['token_info'], authorized = get_token(session)
     session.modified = True
     if not authorized:
@@ -160,5 +166,7 @@ def callback():
 
 if __name__ == '__main__':  # ensure function only runs if executed from the python interpreter
     # app.secret_key = 'super_secret_key2'
+    print('main')
     app.debug = True        # server will reload itself whenever a change is made
     app.run(host = '0.0.0.0' , port = 5000)
+    # app.run()
