@@ -22,6 +22,7 @@ sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
 redirect_uri = 'https://spotifysexyplaylists.azurewebsites.net/callback'
+        
 # redirect_uri = 'http://127.0.0.1:5000/callback' 
 API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
