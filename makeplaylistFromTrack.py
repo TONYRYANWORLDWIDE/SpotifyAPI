@@ -13,7 +13,9 @@ class makeplaylistFromTrack():
         currentsong = sp.current_playback()
         if currentsong is None:
             print('Nothing''s playing homie')
-            return
+            playlistname = 'No Playlists'
+            playlistimage = ''
+            return playlistname,playlistimage
         currenturi = currentsong['item']['external_urls']['spotify']
         currentsongid = currentsong['item']['id']
         progress_ms = currentsong['progress_ms']
@@ -40,4 +42,6 @@ class makeplaylistFromTrack():
                     print(playlistimage)
                     return playlistname,playlistimage# "trackid: {0} context_uri: {1} playlistname: {2} playlistid: {3}".format(trackid,context_uri,playlistname,playlistid)             
         print('No Playlists')
-        return #'No Playlists'
+        playlistname = 'No Playlists'
+        playlistimage = ''
+        return playlistname,playlistimage#'No Playlists'
