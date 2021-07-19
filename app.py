@@ -15,6 +15,7 @@ import time
 from createplaylist import createplaylist
 from getgenres import genreList
 from makeplaylistFromTrack import makeplaylistFromTrack
+from makeClusters import MakeClusters
 app = Flask(__name__)
 Bootstrap(app)
 app.secret_key = os.urandom(24)
@@ -22,10 +23,10 @@ app.secret_key = os.urandom(24)
 sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
-redirect_uri = 'https://spotifysexyplaylists.azurewebsites.net/callback'
+# redirect_uri = 'https://spotifysexyplaylists.azurewebsites.net/callback'
         
-# redirect_uri = 'http://127.0.0.1:5000/callback' 
-API_BASE = 'https://accounts.spotify.com'
+redirect_uri = 'http://127.0.0.1:5000/callback' 
+# API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
 SHOW_DIALOG = True
@@ -46,6 +47,11 @@ def verify():
 def index():
     print("index")
     return render_template("index.html")
+
+@app.route("/clusterize")
+def clusterize():
+    print('clusterize ')
+    return render_template("clusterize.html")
 
 @app.route("/sexytime")
 def sexytime():
@@ -78,6 +84,18 @@ def makeplaylistFromCurrentTrack():
     mp.sp = sp
     playlistname, playlistimage = mp.getsavedsongs()
     return render_template("playlistSwitch.html",playlistname = playlistname,playlistimage=playlistimage)
+
+
+@app.route('/createClusterPlaylists',methods=['POST'])
+def createClusterPlaylists():
+    print('createClusterPlaylists')
+    sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
+    mc = MakeClusters()
+    mc.sp = sp
+    mc.clusterize()
+    #Future state will want to take to page with cluster scatter plot
+    return render_template('index.html')
+
 
 @app.route('/genrePlaylist',methods=['POST'])
 def genrePlaylist():  

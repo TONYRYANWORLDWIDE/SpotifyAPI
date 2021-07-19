@@ -8,7 +8,7 @@ class genreList():
     def __init__(self):
         self.sp = ''
     
-    def getsavedsongs(self):
+    def getTrackInfo(self):
         sp = self.sp
         total = sp.current_user_saved_tracks()['total']
         offset = 50
@@ -18,14 +18,17 @@ class genreList():
             for track in savedtracks2:
                 savedtracks.append(track)
             offset += 50    
-        trackinfo ={}   
+        self.trackinfo ={}   
         for trackex in savedtracks:
             id = trackex['track']['id']
             name = trackex['track']['name']
             artistid = trackex['track']['artists'][0]['id']
             seconds = trackex['track']['duration_ms']/1000
-            trackinfo[trackex['track']['id']] = {"artist" : artistid,"name":name,"seconds":seconds}
-
+            self.trackinfo[trackex['track']['id']] = {"artist" : artistid,"name":name,"seconds":seconds}
+        return self.trackinfo
+    
+    def getsavedsongs(self):
+        trackinfo = self.getTrackInfo()
         self.trackdf = pd.DataFrame.from_dict(trackinfo,orient = "index").reset_index()
         self.trackdf.columns = ['trackid','artistid','trackname','tracklength_sec']
         return self.trackdf

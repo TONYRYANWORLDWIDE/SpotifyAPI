@@ -9,7 +9,6 @@ def createplaylist(sp,studlength):
     for playlist in playlists:
         if playlist['name'] == 'sexy time':
             sexytimeplaylistid = playlist['uri']
-    # print(sexytimeplaylistid, "sexytimeplaylistid")
     if sexytimeplaylistid == '':
         sexytimeplaylistid = sp.user_playlist_create(user=user, name ='sexy time',public = True,description = "Give it to her good")['id']
     #Get Potential tracks based on whats already in sexy time if it exists and users top tracks

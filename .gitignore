@@ -18,3 +18,5 @@ __pycache__/
 .vscode/settings.json
 SpotifySexyTime-Copy1.ipynb
 .spotipyoauthcache
+finaltrackinfo.csv
+.ipynb_checkpoints/GenrePlaylists-checkpoint.ipynb
