@@ -4,6 +4,9 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
 import numpy as np
 from sklearn.cluster import KMeans
+import itertools
+import matplotlib.pyplot as plt
+from matplotlib.pyplot import figure
 
 
 
@@ -96,6 +99,29 @@ class MakeClusters():
                         sp.user_playlist_add_tracks(user = user, playlist_id =id,tracks = tracks[x:y],position = 0)
                     iteration += 1
 
+    def plot_clusters(self,samples,clusters,n_clusters):
+        col_dic_base = {0:'blue',1:'green',2:'orange',3:'red',4:'yellow',
+                5:'black',6:'teal',7: 'brown', 8: 'purple',9: 'azure',
+                10:'slateblue',11:'green',12:'indianred',13:'orange',14:'yellow',
+                15:'black',16:'teal',17: 'brown', 18: 'purple',19: 'azure',
+               20:'thistle',21:'lightcyan'}
+        mrk_dic_base = {0:'*',1:'x',2:'+',3:'p',4:'h',
+                5:'d',6:'<',7:'>',8:'*',9:'v',
+                10:'o',11:'.',12:'^',13:'s',14:'$&$',
+                15:'$@$',16:'$G$',17:'$4$',18:'$?$',19:'$19$',
+               20:'$P$',21:'$H$'}
+        col_dic = dict(itertools.islice(col_dic_base.items(), n_clusters))
+        mrk_dic = dict(itertools.islice(mrk_dic_base.items(), n_clusters))
+        colors = [col_dic[x] for x in clusters]
+        markers = [mrk_dic[x] for x in clusters]
+        for sample in range(len(clusters)):
+            plt.scatter(samples[sample][0], samples[sample][1], color = colors[sample], marker=markers[sample], s=100)
+            plt.xlabel('Dimension 1')
+            plt.ylabel('Dimension 2')
+            plt.title('Assignments')   
+            # path not recognized TODO 
+            # plt.savefig('/static/images/featuresplot.png')
+
     def clusterize(self):
         sp = self.sp        
         user =sp.current_user()['id']
@@ -111,8 +137,10 @@ class MakeClusters():
         n_clusters = self.getNumClusters(audio_features)
         model = KMeans(n_clusters=n_clusters, init='k-means++', n_init=50, max_iter=300,verbose= True,random_state = 56)
         # Fit to the iris data and predict the cluster assignments for each data point
-        km_clusters = model.fit_predict(audio_features.values)        
+        km_clusters = model.fit_predict(audio_features.values)    
+            
         #Delete Existing Clusters
         self.deleteExistingClusters()
         classifier_dict = self.buildClassifierDict(audio_labels,km_clusters)
+        self.plot_clusters(audio_2d,km_clusters,n_clusters)
         self.createClusterPlaylist(n_clusters,classifier_dict)

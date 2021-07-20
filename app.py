@@ -1,6 +1,10 @@
 from flask import Flask,session, render_template, request, redirect, url_for, flash, jsonify
 from flask_bootstrap import Bootstrap
+from flask import Response
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 import os
+import io
 import spotipy
 import spotipy.util as util
 from spotipy.oauth2 import SpotifyOAuth
@@ -12,6 +16,7 @@ import urllib
 import config
 import requests
 import time
+import itertools
 from createplaylist import createplaylist
 from getgenres import genreList
 from makeplaylistFromTrack import makeplaylistFromTrack
@@ -31,6 +36,15 @@ scope = "playlist-modify-public playlist-modify-private user-modify-playback-sta
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
 SHOW_DIALOG = True
 CACHE = '.spotipyoauthcache'
+
+
+@app.route('/plot.png')
+def plot_png():
+    fig = create_figure()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
 
 @app.route('/')
 def verify():
