@@ -23,9 +23,9 @@ app.secret_key = os.urandom(24)
 sexytimeplaylistid=''
 client_id = config.client_id
 client_secret = config.client_secret
-redirect_uri = 'https://spotifysexyplaylists.azurewebsites.net/callback'
+# redirect_uri = 'https://spotifysexyplaylists.azurewebsites.net/callback'
         
-# redirect_uri = 'http://127.0.0.1:5000/callback' 
+redirect_uri = 'http://127.0.0.1:5000/callback' 
 # API_BASE = 'https://accounts.spotify.com'
 scope = "playlist-modify-public playlist-modify-private user-modify-playback-state user-top-read"
 scope += " user-modify-playback-state user-read-playback-state user-library-read user-library-modify"
@@ -92,6 +92,7 @@ def createClusterPlaylists():
     sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
     mc = MakeClusters()
     mc.sp = sp
+    mc.numclustertest = 30
     mc.clusterize()
     #Future state will want to take to page with cluster scatter plot
     return render_template('index.html')
