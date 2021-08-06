@@ -120,8 +120,8 @@ class MakeClusters():
             plt.ylabel('Dimension 2')
             plt.title('Assignments')   
             # path not recognized TODO 
-            # plt.savefig('/static/images/featuresplot.png')
-            # plt.savefig('featuresplot.png')
+            plt.savefig('/static/images/featuresplot.png')
+            plt.savefig('featuresplot.png')
 
     def clusterize(self):
         sp = self.sp        
@@ -144,4 +144,4 @@ class MakeClusters():
         self.deleteExistingClusters()
         classifier_dict = self.buildClassifierDict(audio_labels,km_clusters)
         self.createClusterPlaylist(n_clusters,classifier_dict)
-        self.plot_clusters(audio_2d,km_clusters,n_clusters)
+        # self.plot_clusters(audio_2d,km_clusters,n_clusters)

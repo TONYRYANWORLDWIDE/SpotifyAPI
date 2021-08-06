@@ -1,4 +1,5 @@
 from flask import Flask,session, render_template, request, redirect, url_for, flash, jsonify
+from flask_session import Session
 from flask_bootstrap import Bootstrap
 from flask import Response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -21,9 +22,13 @@ from createplaylist import createplaylist
 from getgenres import genreList
 from makeplaylistFromTrack import makeplaylistFromTrack
 from makeClusters import MakeClusters
+import pandas
 app = Flask(__name__)
 Bootstrap(app)
 app.secret_key = os.urandom(24)
+app.config["SESSION_PERMANENT"] = True
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 sexytimeplaylistid=''
 client_id = config.client_id
@@ -38,12 +43,7 @@ SHOW_DIALOG = True
 CACHE = '.spotipyoauthcache'
 
 
-@app.route('/plot.png')
-def plot_png():
-    fig = create_figure()
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+
 
 
 @app.route('/')
@@ -53,6 +53,7 @@ def verify():
     sp_oauth = spotipy.oauth2.SpotifyOAuth(client_id = client_id, client_secret = client_secret, redirect_uri = redirect_uri, scope = scope,cache_path=CACHE)
     auth_url = sp_oauth.get_authorize_url()
     print("auth url:" ,auth_url)
+    session['test'] = 'testing'
     return redirect(auth_url)
     return render_template("index.html")
     # return 'Hello'
@@ -67,6 +68,15 @@ def clusterize():
     print('clusterize ')
     return render_template("clusterize.html")
 
+
+@app.route('/plot.png')
+def plot_png():
+    fig = create_figure()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
 @app.route("/sexytime")
 def sexytime():
     print('sexytime ')
@@ -75,15 +85,36 @@ def sexytime():
 @app.route("/genres")
 def genres():
     print('genres')
-    session['token_info'], authorized = get_token(session)
-    session.modified = True
-    if not authorized:
-        return redirect('/')   
-    sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
-    gen = genreList()
-    gen.sp = sp
-    user =sp.current_user()['id']
-    genres , finaltrackinfo = gen.getgenres()     
+    if ('genres' in session) & ('finaltrackinfo' in session) & ('trackinfo' in session):
+        print('in there')
+        df = pandas.DataFrame(dict_obj)
+    
+    else:
+        
+        session['token_info'], authorized = get_token(session)
+        session.modified = True
+        if not authorized:
+            return redirect('/')   
+        sp = spotipy.Spotify(auth=session.get('token_info').get('access_token'))
+        gen = genreList()
+        gen.sp = sp
+        user =sp.current_user()['id']    
+        genres , finaltrackinfo, trackinfo = gen.getgenres()  
+
+        genres_dict = genres.to_dict('list')
+        session['genres'] = genres_dict
+
+        finaltrackinfo_dict = finaltrackinfo.to_dict('list')
+        session['finaltrackinfo'] = finaltrackinfo_dict
+
+        trackinfo_dict = trackinfo.to_dict('list')
+        session['trackinfo'] = trackinfo_dict 
+
+
+
+
+
+
     return render_template('genres.html', genres=genres)
 
 @app.route('/currentTrack')
@@ -99,6 +130,13 @@ def makeplaylistFromCurrentTrack():
     playlistname, playlistimage = mp.getsavedsongs()
     return render_template("playlistSwitch.html",playlistname = playlistname,playlistimage=playlistimage)
 
+# @app.route('/plot.png')
+# def plot_png():
+#     fig = create_figure()
+#     output = io.BytesIO()
+#     FigureCanvas(fig).print_png(output)
+#     return Response(output.getvalue(), mimetype='image/png')
+
 
 @app.route('/createClusterPlaylists',methods=['POST'])
 def createClusterPlaylists():
@@ -108,8 +146,9 @@ def createClusterPlaylists():
     mc.sp = sp
     mc.numclustertest = 30
     mc.clusterize()
+    # fig = mc.fig
     #Future state will want to take to page with cluster scatter plot
-    return render_template('index.html')
+    return render_template('Knn.html',name='new_plot', url = 'featuresplot.png')
 
 
 @app.route('/genrePlaylist',methods=['POST'])
@@ -119,7 +158,7 @@ def genrePlaylist():
     gen = genreList()
     gen.sp = sp
     user =sp.current_user()['id']
-    genres , finaltrackinfo = gen.getgenres()
+    genres , finaltrackinfo, trackinfo = gen.getgenres()
     if request.method == 'POST':
         playlistlength = request.form['playlistlength']
         print("playlistlength{0}".format(playlistlength))

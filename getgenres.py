@@ -87,7 +87,7 @@ class genreList():
         genres = genres[(genres['count'] >= 25) & (genres['genre']!= '')].sort_values(by ='genre', ascending = True)
         self.genrelist = genres['genre'].tolist()
         self.finaltrackinfo = finaltrackinfo[finaltrackinfo['genre'].isin(genres['genre'])]
-        return self.genrelist, self.finaltrackinfo
+        return self.genrelist, self.finaltrackinfo, self.trackinfo
         
     def genrefilter(self,df,gen,sec_lim = 36000):
         dfin = df['trackid'][(df['genre'] == gen) & (df['cum_sec'] <= sec_lim)]
